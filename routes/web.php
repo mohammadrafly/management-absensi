@@ -5,6 +5,7 @@ use App\Http\Controllers\Authentication\AuthController;
 use App\Http\Controllers\Dashboard\AbsensiController;
 use App\Http\Controllers\Dashboard\IndexController as DashboardIndexController;
 use App\Http\Controllers\Dashboard\MuridController;
+use App\Http\Controllers\Dashboard\TimeController;
 use App\Http\Controllers\Dashboard\UserController;
 
 Route::controller(AuthController::class)->group(function() {
@@ -15,6 +16,7 @@ Route::middleware('auth')->group(function() {
     Route::prefix('dashboard')->group(function() {
         Route::controller(DashboardIndexController::class)->group(function() {
             Route::match(['POST', 'GET'], '/', 'index')->name('dashboard');
+            Route::match(['GET'], 'logout', 'Logout')->name('logout');
         });
         Route::controller(UserController::class)->group(function() {
             Route::prefix('user')->group(function() {
@@ -27,6 +29,11 @@ Route::middleware('auth')->group(function() {
         Route::controller(MuridController::class)->group(function() {
             Route::prefix('murid')->group(function() {
                 Route::match(['GET'], '/', 'index')->name('murid');
+            });
+        });
+        Route::controller(TimeController::class)->group(function() {
+            Route::prefix('setting-bot')->group(function() {
+                Route::match(['GET', 'POST'], '/', 'index')->name('setting');
             });
         });
         Route::controller(AbsensiController::class)->group(function() {

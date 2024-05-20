@@ -1,12 +1,9 @@
 @extends('layouts.auth')
 
 @section('content')
-
     <div class="min-h-screen flex flex-col items-center justify-center bg-gray-100">
         <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
             <h2 class="text-2xl mb-4">Login</h2>
-
-            @include('components.flash')
 
             <form action="{{ route('login') }}" method="post">
                 @csrf
@@ -30,5 +27,4 @@
             </form>
         </div>
     </div>
-
 @endsection

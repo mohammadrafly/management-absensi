@@ -12,7 +12,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        return view('pages.dashboard.index', [
+        return view('pages.dashboard.user.index', [
             'title' => 'Data User',
             'data' => User::all()
         ]);
@@ -43,7 +43,7 @@ class UserController extends Controller
             return redirect()->route('user')->with(['success' => 'Success tambah user!']);
         }
 
-        return view('pages.dashboard.create', [
+        return view('pages.dashboard.user.create', [
             'title' => 'Tambah User'
         ]);
     }
@@ -52,27 +52,28 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if ($request->isMethod('POST')){
-            $validator = Validator::make($request->all(), [
+            $data = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
+                'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
             ]);
-        
-            if ($validator->fails()) {
+            
+            if ($data->fails()) {
                 return redirect()->route('user.update', $id)
-                    ->withErrors($validator)
+                    ->withErrors($data)
                     ->withInput();
             }
-        
-            $data = $request->only(['name', 'email']);
-        
-            if (!$user->update($id, $data)){
-                return redirect()->route('user.update', $id)->with(['error' => 'Gagal tambah user!']);
+            
+            $validatedData = $data->validated();
+            
+            if (!$user->update($validatedData)) {
+                return redirect()->route('user.update', $id)->with(['error' => 'Gagal update user!']);
             }
+            
         
-            return redirect()->route('user.update', $id)->with(['success' => 'Success tambah user!']);
+            return redirect()->route('user')->with(['success' => 'Success update user!']);
         }
 
-        return view('pages.dashboard.update', [
+        return view('pages.dashboard.user.update', [
             'title' => 'Update User',
             'data' => $user
         ]);

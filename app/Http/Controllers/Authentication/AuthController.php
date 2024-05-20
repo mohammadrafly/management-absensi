@@ -12,24 +12,20 @@ class AuthController extends Controller
     public function Login(Request $request)
     {
         if ($request->isMethod('POST')) {
-            $validator = Validator::make($request->all(), [
-                'email' => 'required|email',
-                'password' => 'required',
+            $credentials = $request->validate([
+                'email' => ['required', 'email'],
+                'password' => ['required'],
             ]);
 
-            if ($validator->fails()) {
-                return redirect()->route('login')
-                    ->withErrors($validator)
-                    ->withInput();
-            }
-
-            $credentials = $request->only(['email', 'password']);
-
-            if (!Auth::attempt($credentials)) {
-                return redirect()->route('login')->with(['error' => 'Gagal login.']);
+            if (Auth::attempt($credentials)) {
+                $request->session()->regenerate();
+ 
+                return redirect()->intended('dashboard');
             }
             
-            return redirect()->route('dashboard')->with(['success' => 'Berhasil login.']);
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ])->onlyInput('email');
         }
 
         return view('pages.login', [

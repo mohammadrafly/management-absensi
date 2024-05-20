@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Dashboard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
 class IndexController extends Controller
@@ -15,10 +16,14 @@ class IndexController extends Controller
         ]);
     }
 
-    public function Logout()
+    public function Logout(Request $request): RedirectResponse
     {
-        Auth::destroy();
-
+        Auth::logout();
+ 
+        $request->session()->invalidate();
+     
+        $request->session()->regenerateToken();
+        
         return redirect()->route('login')->with(['success' => 'Berhasil keluar dari sistem.']);
     }
 }

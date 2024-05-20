@@ -10,9 +10,11 @@ class AbsensiController extends Controller
 {
     public function index()
     {
+        $absensi = Absensi::with('murid')->latest()->get();
+
         return view('pages.dashboard.absen', [
             'title' => 'Data Absensi',
-            'data' => Absensi::all()
+            'data' => $absensi
         ]);
     }
 }
