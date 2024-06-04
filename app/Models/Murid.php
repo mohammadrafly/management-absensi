@@ -16,4 +16,9 @@ class Murid extends Model
         'name',
         'ophone',
     ];
+
+    public function absens()
+    {
+        return $this->hasMany(Absensi::class, 'uid', 'uid');
+    }
 }
